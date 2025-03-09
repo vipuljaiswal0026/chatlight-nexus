@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, signInWithGoogle } from '@/lib/supabase';
 import { User } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -10,6 +9,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithGoogleOAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -115,8 +115,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithGoogleOAuth = async () => {
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Error signing in with Google",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      signIn, 
+      signUp, 
+      signOut, 
+      signInWithGoogleOAuth 
+    }}>
       {children}
     </AuthContext.Provider>
   );

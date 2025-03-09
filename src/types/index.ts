@@ -26,3 +26,8 @@ export interface SearchResult {
   url: string;
   snippet: string;
 }
+
+export interface AISuggestion {
+  text: string;
+  confidence: number;
+}
