@@ -12,13 +12,7 @@ export interface Message {
   createdAt: Date;
 }
 
-export interface Chat {
-  id: string;
-  title: string;
-  messages: Message[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+export { Chat, ChatState, ChatActions } from './chat';
 
 export interface SearchResult {
   id: string;
