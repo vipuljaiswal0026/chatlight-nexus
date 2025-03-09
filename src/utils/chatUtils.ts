@@ -13,12 +13,18 @@ export const createNewChatObject = (): Chat => {
   };
 };
 
-export const addMessageToChat = (chat: Chat, content: string, role: 'user' | 'assistant'): Chat => {
+export const addMessageToChat = (
+  chat: Chat, 
+  content: string, 
+  role: 'user' | 'assistant', 
+  attachmentUrl?: string
+): Chat => {
   const message: Message = {
     id: uuidv4(),
     content,
     role,
-    createdAt: new Date()
+    createdAt: new Date(),
+    attachmentUrl
   };
   
   return {

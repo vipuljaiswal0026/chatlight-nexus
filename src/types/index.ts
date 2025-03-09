@@ -10,6 +10,7 @@ export interface Message {
   content: string;
   role: 'user' | 'assistant';
   createdAt: Date;
+  attachmentUrl?: string;
 }
 
 export interface SearchResult {

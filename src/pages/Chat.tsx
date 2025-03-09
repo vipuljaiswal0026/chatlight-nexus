@@ -10,11 +10,14 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LogOut, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { exportChatToPDF } from '@/utils/exportUtils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Chat() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { chats, currentChat, loading: chatLoading, createNewChat, sendMessage, selectChat, deleteChat } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -38,6 +41,32 @@ export default function Chat() {
       </div>
     );
   }
+  
+  // Handle exporting conversation to PDF
+  const handleExportPDF = () => {
+    if (!currentChat) return;
+    
+    exportChatToPDF(currentChat)
+      .then(() => {
+        toast({
+          title: "Export successful",
+          description: "Your conversation has been exported to PDF"
+        });
+      })
+      .catch(error => {
+        console.error("PDF export error:", error);
+        toast({
+          title: "Export failed",
+          description: "There was an error exporting your conversation",
+          variant: "destructive"
+        });
+      });
+  };
+  
+  // Handle sending message with attachment
+  const handleSendMessage = (content: string, attachmentUrl?: string) => {
+    sendMessage(content, attachmentUrl);
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -89,8 +118,8 @@ export default function Chat() {
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="max-w-3xl mx-auto space-y-4">
+        <ScrollArea className="flex-1">
+          <div className="space-y-0 py-4">
             {currentChat?.messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
@@ -101,7 +130,11 @@ export default function Chat() {
         {/* Input */}
         <div className="p-4 border-t bg-background">
           <div className="max-w-3xl mx-auto">
-            <ChatInput onSendMessage={sendMessage} disabled={chatLoading} />
+            <ChatInput 
+              onSendMessage={handleSendMessage} 
+              disabled={chatLoading} 
+              onExportPDF={handleExportPDF}
+            />
           </div>
         </div>
       </div>

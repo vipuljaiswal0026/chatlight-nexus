@@ -17,7 +17,7 @@ export interface Chat {
 
 export interface ChatActions {
   createNewChat: () => void;
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, attachmentUrl?: string) => Promise<void>;
   selectChat: (chatId: string) => void;
   deleteChat: (chatId: string) => void;
 }

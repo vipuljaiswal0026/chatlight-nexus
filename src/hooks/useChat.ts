@@ -53,8 +53,8 @@ export function useChat(): ChatState & ChatActions {
     setCurrentChat(newChat);
   };
 
-  const sendMessage = async (content: string) => {
-    if (!content.trim() || !user) return;
+  const sendMessage = async (content: string, attachmentUrl?: string) => {
+    if ((!content.trim() && !attachmentUrl) || !user) return;
 
     let chatToUpdate = currentChat;
     
@@ -67,7 +67,7 @@ export function useChat(): ChatState & ChatActions {
     if (!chatToUpdate) return;
     
     // Add user message
-    const updatedWithUserMessage = addMessageToChat(chatToUpdate, content, 'user');
+    const updatedWithUserMessage = addMessageToChat(chatToUpdate, content, 'user', attachmentUrl);
     
     setCurrentChat(updatedWithUserMessage);
     setChats(prevChats =>
@@ -76,6 +76,7 @@ export function useChat(): ChatState & ChatActions {
     
     // Simulate AI response
     try {
+      setLoading(true);
       const assistantMessage = await simulateResponse(content);
       
       const finalUpdatedChat = {
@@ -98,6 +99,8 @@ export function useChat(): ChatState & ChatActions {
         description: 'Failed to get a response',
         variant: 'destructive',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
