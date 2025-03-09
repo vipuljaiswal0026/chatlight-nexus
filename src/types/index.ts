@@ -12,8 +12,6 @@ export interface Message {
   createdAt: Date;
 }
 
-export { Chat, ChatState, ChatActions } from './chat';
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -25,3 +23,6 @@ export interface AISuggestion {
   text: string;
   confidence: number;
 }
+
+// Change from 'export { Chat, ChatState, ChatActions }' to 'export type'
+export type { Chat, ChatState, ChatActions } from './chat';
